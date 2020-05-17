@@ -9,6 +9,7 @@ function assertInt(r) {
   r = r | 0
   var p = x.encode(r)
   console.log(r, readBuffer(x.memory, p).toString())
+  assert.equal(x.memory.readUInt32LE(p), r.toString().length)
   assert.equal(readBuffer(x.memory, p).toString(), r.toString())
   var length = x.memory.readUInt32LE(p)
   assert.equal(length, r.toString().length, 'length is correct')
