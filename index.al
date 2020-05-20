@@ -12,30 +12,26 @@
   ))
 
   ;;iterates from start to end
-  (def range (fun (st end initial reduce)
+  (def range (fun (start end initial reduce)
     ((fun R (acc i)
       (if (lt i end) (R (reduce acc i) (add 1 i)) acc)
-    ) initial st)
+    ) initial start)
   ))
 
   (def encode (fun (i)
     (if (eq 0 i) "0" {block
       (def abs_i (if (lt i 0) (mul i -1) i))
 
-      ;; need to calculate the length first
-      (def l [(fun R (l2 i2)
-        (if (gt i2 0) (R (add 1 l2) (div i2 10)) l2) ) 0 abs_i])
-      ;; okay my inlining isn't hygenic that's why this doesn't work.
-;;      [def l (until (fun (i2 l2) (div i2 10)) abs_i 0)]
+      [def l (until abs_i 0 (fun (i l) (div i 10)))]
 
       (def s (strings.create (add l (lt i 0))))
       (if (lt i 0) (strings.set_at s 0 minus))
 
       ;;set digits from the end, working backwards
       ;;must also leave a space for the - if it's negative
-      (until abs_i (gte i 0) (fun (i3 j) {block
-        (strings.set_at s (sub l j) (add (mod i3 10) zero))
-        (div i3 10)
+      (until abs_i (gte i 0) (fun (i j) {block
+        (strings.set_at s (sub l j) (add (mod i 10) zero))
+        (div i 10)
       }))
 
       s
